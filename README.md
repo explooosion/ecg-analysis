@@ -1,4 +1,4 @@
-# ecg-sensor
+# ecg-analysis
 
 個人實驗專案，將 [ecg-sensor](https://github.com/explooosion/ecg-sensor) 進行資料轉換，用於 Matlab。
 
@@ -6,21 +6,13 @@
 
 1. [ecg-sensor](https://github.com/explooosion/ecg-sensor) - 接收設備資料之專案。
 2. [ecg-split](https://github.com/explooosion/ecg-split) - 將資料以指定分鐘數切割，用於計算 QRS 波。
-3. [ecg-convert](https://github.com/explooosion/ecg-convert) - 將資料轉換成純數值，用於 Matlab。
+3. ~~[ecg-convert](https://github.com/explooosion/ecg-convert) - 將資料轉換成純數值，用於 Matlab。~~
+4. [ecg-analysis](https://github.com/explooosion/ecg-analysis)) - 將 Matlab 跑完 Start1.m, Start2.m 後，進行分群切割、維度縮減、矩陣翻轉。
 
 ### 資料準備
 
-將欲轉換的資料夾放置於 `src/data` 裡面，資料夾為 [ecg-sensor](https://github.com/explooosion/ecg-sensor) 所產生的 `stage` 資料夾，可一次放入多個進行轉換。 
+將 Matlab 跑完後欲分析的資料夾放置於 `src/data` 裡面。 
 
-
-資料內容預期格式：
-
-```json
-[
-  { "data":81, "time":"2019-01-25T15:47:12.425" },  
-  { "data":310, "time":"2019-01-25T15:47:12.430" }
-]
-```
 
 ## 執行
 
@@ -31,21 +23,4 @@ yarn start
 #### 輸出資料
 
 輸出於 `out/` 資料夾。
-
-
-資料輸出預期格式：
-
-```sh
-81
-310
-295
-285
-321
-307
-277
-303
-297
-277
-...
-```
 
