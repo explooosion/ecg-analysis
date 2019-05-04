@@ -6,18 +6,9 @@ import Worker from './Worker';
 const PATH = './src/data/';
 
 const GROUP = [
-  { name: '劉仁恩', group: 'A' },
-  { name: '周冠瑜', group: 'A' },
-  { name: '李雅婷', group: 'A' },
-  { name: '賈希謙', group: 'A' },
-  { name: '黃若雅', group: 'A' },
-  { name: '陳柏杰', group: 'B' },
-  { name: '王郁鈞', group: 'B' },
-  { name: '林家安', group: 'B' },
-  { name: '張孝睿', group: 'B' },
-  { name: '廖俊皓', group: 'B' }
+  { name: 'TEST1', group: 'A' },
+  { name: 'TEST2', group: 'B' },
 ];
-
 const OUTPUTS1 = [], OUTPUTS2 = [], OUTPUTS3 = [];
 
 GROUP.forEach(({ name, group }, index) => {
