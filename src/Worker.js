@@ -34,13 +34,16 @@ class Worker {
   caculate1() {
     this.stages.forEach(s => {
       const d = this.datas.filter(hrv => hrv[0] === s);
+      const dLength = Math.round(d.length / 2);
       // 將所有指標存於此物件
       const pointers = {};
-      this.header.forEach((h, index) => {
+      this.header.forEach((h, index, arr) => {
         // 第一個 Header 是 Stage，需要跳過。
         if (index > 0) {
           // 開始後十分鐘的平均
           pointers[`${h}_前`] = (d[1][index] + d[2][index]) / 2;
+          // 中間區十分鐘的平均
+          pointers[`${h}_中`] = (d[dLength][index] + d[dLength + 1][index]) / 2;
           // 結束前十分鐘的平均
           pointers[`${h}_後`] = (d[d.length - 1][index] + d[d.length - 2][index]) / 2;
         }
@@ -59,6 +62,7 @@ class Worker {
       // 只抓出第一個和最後一個
       if (sindex === 0 || sindex === this.stages.length - 1) {
         const d = this.datas.filter(hrv => hrv[0] === s);
+        const dLength = Math.round(d.length / 2);
         // 將所有指標存於此物件
         const pointers = {};
         this.header.forEach((h, index) => {
@@ -66,6 +70,8 @@ class Worker {
           if (index > 0) {
             // 開始後十分鐘的平均
             pointers[`${h}_前`] = (d[1][index] + d[2][index]) / 2;
+            // 中間區十分鐘的平均
+            pointers[`${h}_中`] = (d[dLength][index] + d[dLength + 1][index]) / 2;
             // 結束前十分鐘的平均
             pointers[`${h}_後`] = (d[d.length - 1][index] + d[d.length - 2][index]) / 2;
           }
@@ -84,6 +90,7 @@ class Worker {
       // 只抓出第一個和最後一個
       if (sindex === 0 || sindex === this.stages.length - 1) {
         const d = this.datas.filter(hrv => hrv[0] === s);
+        const dLength = Math.round(d.length / 2);
         // 將所有指標存於此物件
         const pointers = {};
         this.header.forEach((h, hindex) => {
@@ -94,6 +101,8 @@ class Worker {
           if (hindex > 0) {
             // 開始後十分鐘的平均，前兩筆
             pointers[`${h}_前`] = (d[1][hindex] + d[2][hindex]) / 2;
+            // 中間區十分鐘的平均，前兩筆
+            pointers[`${h}_中`] = (d[dLength][hindex] + d[dLength + 1][hindex]) / 2;
             // 結束前十分鐘的平均，末兩筆
             pointers[`${h}_後`] = (d[d.length - 1][hindex] + d[d.length - 2][hindex]) / 2;
           }
