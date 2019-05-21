@@ -1,8 +1,5 @@
 import ObjectsToCsv from 'objects-to-csv';
 
-/**
- * 計算每人每天起始與結束的平均值
- */
 class Worker {
   constructor(group, name, input) {
     this.group = group;
@@ -29,7 +26,7 @@ class Worker {
   }
 
   /**
-   * 每個人每天開始前與結束後的疲勞 => 檢測每天的疲勞變化
+   * 計算每人每天起始、中間以及結束的十分鐘平均值
    */
   caculate1() {
     this.stages.forEach(s => {
@@ -54,8 +51,7 @@ class Worker {
   }
 
   /**
-   * 每個人第一天開始與最後一天開始 => 檢測前後的開始變化
-   * 每個人第一天結束與最後一天結束 => 檢測前後的結束變化
+   * 計算每人第一天與最後一天的起始、中間以及結束的十分鐘平均值
    */
   caculate2() {
     this.stages.forEach((s, sindex) => {
@@ -83,7 +79,7 @@ class Worker {
   }
 
   /**
-   * 每個人第一天平均與最後一天平均 => 檢測前後測試的一天平均變化
+   * 每個人第一天平均值與最後一天平均值
    */
   caculate3() {
     this.stages.forEach((s, sindex) => {
@@ -99,12 +95,16 @@ class Worker {
           //   pointers[`${h}_前`] = d.reduce((prev, data) => prev + data[hindex], 0) / d.length;
           // };
           if (hindex > 0) {
-            // 開始後十分鐘的平均，前兩筆
-            pointers[`${h}_前`] = (d[1][hindex] + d[2][hindex]) / 2;
-            // 中間區十分鐘的平均，前兩筆
-            pointers[`${h}_中`] = (d[dLength][hindex] + d[dLength + 1][hindex]) / 2;
-            // 結束前十分鐘的平均，末兩筆
-            pointers[`${h}_後`] = (d[d.length - 1][hindex] + d[d.length - 2][hindex]) / 2;
+            // 將前中後的十分鐘，計算出平均值，不可以用整體時段，會影響到 pp50 等個數比例
+            const dFML = [
+              d[1][hindex],
+              d[2][hindex],
+              d[dLength][hindex],
+              d[dLength + 1][hindex],
+              d[d.length - 1][hindex],
+              d[d.length - 2][hindex],
+            ];
+            pointers[h] = dFML.reduce((acc, value) => acc + value, 0) / dFML.length;
           }
         }); // End Header loop
         this.output.push({ Group: this.group, Name: this.name, Stage: s, ...pointers });
@@ -112,6 +112,85 @@ class Worker {
     }); // End stage loop
     // return this.output;
     // 重組欄位
+    this.output = Object.keys(this.output[0]).reduce((acc, k) => {
+      return {
+        ...acc,
+        [`${k}1`]: this.output[0][k],
+        [`${k}2`]: this.output[1][k],
+      }
+    }, {});
+    return [this.output];
+  }
+
+  /**
+   * 每個人第一天平均值與第四天平均值
+   */
+  caculate4() {
+    this.stages.forEach((s, sindex) => {
+      // 只抓出第一個和第四天
+      if (sindex === 0 || sindex === 3) {
+        const d = this.datas.filter(hrv => hrv[0] === s);
+        const dLength = Math.round(d.length / 2);
+        // 將所有指標存於此物件
+        const pointers = {};
+        this.header.forEach((h, hindex) => {
+          // 第一個 Header 是 Stage，需要跳過。
+          // if (hindex > 0) {
+          //   pointers[`${h}_前`] = d.reduce((prev, data) => prev + data[hindex], 0) / d.length;
+          // };
+          if (hindex > 0) {
+            // 將前中後的十分鐘，計算出平均值，不可以用整體時段，會影響到 pp50 等個數比例
+            const dFML = [
+              d[1][hindex],
+              d[2][hindex],
+              d[dLength][hindex],
+              d[dLength + 1][hindex],
+              d[d.length - 1][hindex],
+              d[d.length - 2][hindex],
+            ];
+            pointers[h] = dFML.reduce((acc, value) => acc + value, 0) / dFML.length;
+          }
+        }); // End Header loop
+        this.output.push({ Group: this.group, Name: this.name, Stage: s, ...pointers });
+      }
+    }); // End stage loop
+    // return this.output;
+    // 重組欄位
+    this.output = Object.keys(this.output[0]).reduce((acc, k) => {
+      return {
+        ...acc,
+        [`${k}1`]: this.output[0][k],
+        [`${k}2`]: this.output[1][k],
+      }
+    }, {});
+    return [this.output];
+  }
+
+  /**
+   * 計算每人第一天與最後一天的起始、中間以及結束的十分鐘平均值，橫面時間比較
+   */
+  caculate5() {
+    this.stages.forEach((s, sindex) => {
+      // 只抓出第一個和最後一個
+      if (sindex === 0 || sindex === this.stages.length - 1) {
+        const d = this.datas.filter(hrv => hrv[0] === s);
+        const dLength = Math.round(d.length / 2);
+        // 將所有指標存於此物件
+        const pointers = {};
+        this.header.forEach((h, index) => {
+          // 第一個 Header 是 Stage，需要跳過。
+          if (index > 0) {
+            // 開始後十分鐘的平均
+            pointers[`${h}_前`] = (d[1][index] + d[2][index]) / 2;
+            // 中間區十分鐘的平均
+            pointers[`${h}_中`] = (d[dLength][index] + d[dLength + 1][index]) / 2;
+            // 結束前十分鐘的平均
+            pointers[`${h}_後`] = (d[d.length - 1][index] + d[d.length - 2][index]) / 2;
+          }
+        }); // End Header loop
+        this.output.push({ Group: this.group, Name: this.name, Stage: s, ...pointers });
+      }
+    }); // End stage loop
     this.output = Object.keys(this.output[0]).reduce((acc, k) => {
       return {
         ...acc,
