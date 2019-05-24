@@ -37,7 +37,7 @@ class Worker {
         // 第一個 Header 是 Stage，需要跳過。
         if (index > 0) {
           // 開始後二十分鐘的平均
-          pointers[`${h}_前`] = (d[1][index] + d[2][index] + d[3][index] + d[4][index]) / 4;
+          pointers[`${h}_前`] = (d[0][index] + d[1][index] + d[2][index] + d[3][index]) / 4;
           // 中間區二十分鐘的平均
           pointers[`${h}_中`] = (d[dLength - 1][index] + d[dLength][index] + d[dLength + 1][index] + d[dLength + 2][index]) / 4;
           // 結束前二十分鐘的平均
@@ -64,7 +64,7 @@ class Worker {
           // 第一個 Header 是 Stage，需要跳過。
           if (index > 0) {
             // 開始後二十分鐘的平均
-            pointers[`${h}_前`] = (d[1][index] + d[2][index] + d[3][index] + d[4][index]) / 4;
+            pointers[`${h}_前`] = (d[0][index] + d[1][index] + d[2][index] + d[3][index]) / 4;
             // 中間區二十分鐘的平均
             pointers[`${h}_中`] = (d[dLength - 1][index] + d[dLength][index] + + d[dLength + 1][index] + d[dLength + 2][index]) / 4;
             // 結束前二十分鐘的平均
@@ -192,11 +192,11 @@ class Worker {
           // 第一個 Header 是 Stage，需要跳過。
           if (index > 0) {
             // 開始後二十分鐘的平均
-            pointers[`${h}_前`] = (d[1][index] + d[2][index] + d[3][index] + d[4][index]) / 4;
-            // 中間區二十分鐘的平均
+            pointers[`${h}_前`] = (d[0][index] + d[1][index] + d[2][index] + d[3][index]) / 4;
+            // // 中間區二十分鐘的平均
             pointers[`${h}_中`] = (d[dLength - 1][index] + d[dLength][index] + d[dLength + 1][index] + d[dLength + 2][index]) / 4;
-            // 結束前二十分鐘的平均
-            pointers[`${h}_後`] = (d[d.length - 1][index] + d[d.length - 2][index] + d[d.length - 3][index] + d[d.Length - 4][index]) / 4;
+            // // 結束前二十分鐘的平均
+            pointers[`${h}_後`] = (d[d.length - 1][index] + d[d.length - 2][index] + d[d.length - 3][index] + d[d.length - 4][index]) / 4;
           }
         }); // End Header loop
         this.output.push({ Group: this.group, Name: this.name, Stage: s, ...pointers });
